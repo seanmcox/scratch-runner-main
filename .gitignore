@@ -7,3 +7,5 @@
 /dist/install/win/bundle
 /dist/install/win/lib
 /dist/install/win/*.jar
+/data
+!/data/*.sb2
