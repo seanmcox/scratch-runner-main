@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="jar" name="Scratch Runner Main">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+
+	<tstamp>
+	     <format property="version" pattern="yyyy.MM.dd"/>
+	</tstamp>
+	
+    <target name="clean">
+    		<delete dir="../install/plain/felix-cache"></delete>
+		<delete dir="../install/test/felix-cache"></delete>
+		<delete dir="../install/win/felix-cache"></delete>
+    </target>
+
+	<target name="jar">
+        <jar destfile="../install/plain/scratchrunner.jar">
+            <manifest>
+                <attribute name="Main-Class" value="com.shtick.utils.scratch.runner.Main"/>
+                <attribute name="Class-Path" value=". lib/org.apache.felix.main-5.0.0.jar lib/jflac-1.3.jar"/>
+            </manifest>
+            <fileset dir="../../bin"/>
+        </jar>
+    </target>
+
+    <target name="testrun">
+		<delete dir="../install/test/felix-cache"></delete>
+	    	<echo message="Performing test run."></echo>
+		<delete dir="../install/test/felix-cache"/>
+    		<delete>
+    			<fileset dir="../install/test" includes="**/*.jar"/>
+    		</delete>
+		<copy todir="../install/test/">
+			<fileset dir="../install/plain" includes="*.jar"/>
+		</copy>
+    		<copy todir="../install/test/bundle">
+    			<fileset dir="../install/plain/bundle" includes="*.jar"/>
+    		</copy>
+		<copy todir="../install/test/lib">
+			<fileset dir="../install/plain/lib" includes="*.jar"/>
+		</copy>
+	    <java jar="../install/test/scratchrunner.jar" dir="../install/test" fork="true">
+	    		<arg value="./testproj.sb2"/>
+	    </java>
+	    	<echo message="Finished"></echo>
+    </target>
+	
+    <target name="create_deliverables" depends="jar,clean">
+	    	<echo message="Creating Delivery Packages"></echo>
+    	
+    		<echo message="Packaging Plain"></echo>
+    		<zip destfile="../scratchrunner${version}.zip" basedir="../install/plain"/>
+    	
+	    	<echo message="Packaging for Windows"></echo>
+    		<delete>
+    			<fileset dir="../install/win" includes="**/*.jar"/>
+    		</delete>
+		<copy todir="../install/win/">
+			<fileset dir="../install/plain" includes="*.jar"/>
+		</copy>
+    		<copy todir="../install/win/bundle">
+    			<fileset dir="../install/plain/bundle" includes="*.jar"/>
+    		</copy>
+		<copy todir="../install/win/lib">
+			<fileset dir="../install/plain/lib" includes="*.jar"/>
+		</copy>
+		<zip destfile="../scratchrunner${version}.win.zip" basedir="../install/win"/>
+    </target>
+	
+</project>
