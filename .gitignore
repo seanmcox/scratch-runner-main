@@ -1,0 +1,9 @@
+/bin
+/dist/*.zip
+/dist/install/plain/bundle
+/dist/install/plain/*.jar
+/dist/install/test
+!/dist/install/test/*.sb2
+/dist/install/win/bundle
+/dist/install/win/lib
+/dist/install/win/*.jar
