@@ -40,9 +40,10 @@
 			<fileset dir="../install/plain/lib" includes="*.jar"/>
 		</copy>
 	    <java jar="../install/test/scratchrunner.jar" dir="../install/test" fork="true">
-	    		<arg value="./testproj.sb2"/>
+	    	<arg value="-f"/>
+	        <arg value="./testproj.sb2"/>
 	    </java>
-	    	<echo message="Finished"></echo>
+	    <echo message="Finished"></echo>
     </target>
 	
     <target name="create_deliverables" depends="jar,clean">
