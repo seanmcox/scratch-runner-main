@@ -1,4 +1,5 @@
 /bin
+**/.DS_Store
 /dist/*.zip
 /dist/install/plain/bundle
 /dist/install/plain/felix-cache
