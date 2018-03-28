@@ -39,7 +39,7 @@
 		<copy todir="../install/test/lib">
 			<fileset dir="../install/plain/lib" includes="*.jar"/>
 		</copy>
-	    <java jvmargs="--add-opens java.base/java.net=ALL-UNNAMED" jar="../install/test/scratchrunner.jar" dir="../install/test" fork="true">
+	    <java jar="../install/test/scratchrunner.jar" dir="../install/test" fork="true">
 	    	<arg value="-f"/>
 	        <arg value="./testproj.sb2"/>
 	    </java>
