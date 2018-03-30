@@ -45,7 +45,7 @@ public class Main {
 			framework.start();
 			ServiceReference<?> runtimeReference=framework.getBundleContext().getServiceReference("com.shtick.utils.scratch.runner.core.ScratchRuntime");
 			if(runtimeReference==null){
-				System.out.println("No ScratchRuntime found.");
+				System.err.println("No ScratchRuntime found.");
 				synchronized(config){
 					config.wait(30000);
 				}
