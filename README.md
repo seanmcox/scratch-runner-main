@@ -1,6 +1,8 @@
 # scratch-runner-main
 The initializer for the Scratch Runner. Starts up Apache Felix and loads the scratch runtime implementation.
 
+The compiled Scratch Runner can be downloaded from <a href="http://theshtick.org/scratchrunner/">http://theshtick.org/scratchrunner/</a>
+
 This is an Eclipse project. This is also the main project for the Scratch Runner, which contains the tasks for building the installation packages. The intended build method requires that you have Eclipse installed with the Java Development Tools. Four projects will need to be cloned into the same directory:
 
 * `scratch-runner-main`
