@@ -45,6 +45,29 @@
 	    </java>
 	    <echo message="Finished"></echo>
     </target>
+
+    <target name="testrun_debug">
+		<delete dir="../install/test/felix-cache"></delete>
+	    	<echo message="Performing test run."></echo>
+		<delete dir="../install/test/felix-cache"/>
+    		<delete>
+    			<fileset dir="../install/test" includes="**/*.jar"/>
+    		</delete>
+		<copy todir="../install/test/">
+			<fileset dir="../install/plain" includes="*.jar"/>
+		</copy>
+    		<copy todir="../install/test/bundle">
+    			<fileset dir="../install/plain/bundle" includes="*.jar"/>
+    		</copy>
+		<copy todir="../install/test/lib">
+			<fileset dir="../install/plain/lib" includes="*.jar"/>
+		</copy>
+	    <java jar="../install/test/scratchrunner.jar" dir="../install/test" fork="true" jvmargs="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5432">
+	    	<arg value="-f"/>
+	        <arg value="./testproj.sb2"/>
+	    </java>
+	    <echo message="Finished"></echo>
+    </target>
 	
     <target name="create_deliverables" depends="jar,clean">
 	    	<echo message="Creating Delivery Packages"></echo>
