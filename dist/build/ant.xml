@@ -23,7 +23,7 @@
         </jar>
     </target>
 
-    <target name="testrun">
+    <target name="run_image_viewer">
 		<delete dir="../install/test/felix-cache"></delete>
 	    	<echo message="Performing test run."></echo>
 		<delete dir="../install/test/felix-cache"/>
@@ -39,14 +39,13 @@
 		<copy todir="../install/test/lib">
 			<fileset dir="../install/plain/lib" includes="*.jar"/>
 		</copy>
-	    <java jar="../install/test/scratchrunner.jar" dir="../install/test" fork="true">
-	    	<arg value="-f"/>
+	    <java jar="../install/test/bundle/scratchrunner.runtime.jar" dir="../install/test" fork="true">
 	        <arg value="./testproj.sb2"/>
 	    </java>
 	    <echo message="Finished"></echo>
     </target>
 
-    <target name="testrun_debug">
+    <target name="run_test">
 		<delete dir="../install/test/felix-cache"></delete>
 	    	<echo message="Performing test run."></echo>
 		<delete dir="../install/test/felix-cache"/>
