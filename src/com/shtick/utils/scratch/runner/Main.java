@@ -18,7 +18,7 @@ import org.osgi.framework.launch.Framework;
  * @author Sean
  *
  */
-public class Main {
+public class Main{
     private static Framework framework = null;
     private static Object mainService;
 
@@ -38,11 +38,11 @@ public class Main {
             config.put(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERTY, AutoProcessor.AUTO_DEPLOY_INSTALL_VALUE+","+AutoProcessor.AUTO_DEPLOY_UPDATE_VALUE+","+AutoProcessor.AUTO_DEPLOY_START_VALUE);
             
             for(String key:config.keySet())
-            		System.getProperties().setProperty(key, config.get(key));
+        		System.getProperties().setProperty(key, config.get(key));
             
 			AutoProcessor.process(config, framework.getBundleContext());
 			framework.start();
-			ServiceReference<?> runtimeReference=framework.getBundleContext().getServiceReference("com.shtick.utils.scratch.runner.core.ScratchRuntime");
+			ServiceReference<?> runtimeReference=framework.getBundleContext().getServiceReference("com.shtick.utils.scratch.runner.core.Main");
 			if(runtimeReference==null){
 				System.err.println("No ScratchRuntime found.");
 				synchronized(config){
@@ -50,17 +50,17 @@ public class Main {
 				}
 			}
 			else{
-        			mainService=framework.getBundleContext().getService(runtimeReference);
-        			try {
-	        			Method method = mainService.getClass().getMethod("main", String[].class);
-	        			method.invoke(mainService, new Object[] {args});
-        			}
-        			catch(NoSuchMethodException t) {
-        				throw new RuntimeException(t);
-        			}
+    			mainService=framework.getBundleContext().getService(runtimeReference);
+    			try {
+        			Method method = mainService.getClass().getMethod("main", String[].class);
+        			method.invoke(mainService, new Object[] {args});
+    			}
+    			catch(NoSuchMethodException t) {
+    				throw new RuntimeException(t);
+    			}
 			}
-	        	framework.stop();
-	        	System.exit(0);
+        	framework.stop();
+        	System.exit(0);
         }
         catch (Exception t){
             System.err.println("Could not create framework: " + t);
