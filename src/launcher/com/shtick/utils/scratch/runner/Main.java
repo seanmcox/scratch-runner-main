@@ -20,7 +20,8 @@ import org.osgi.framework.launch.Framework;
  */
 public class Main {
     private static Framework framework = null;
-    private static Object mainService;
+    private static Object factoryService;
+    private static Object driverService;
 
 	/**
 	 * @param args
@@ -38,29 +39,45 @@ public class Main {
             config.put(AutoProcessor.AUTO_DEPLOY_ACTION_PROPERTY, AutoProcessor.AUTO_DEPLOY_INSTALL_VALUE+","+AutoProcessor.AUTO_DEPLOY_UPDATE_VALUE+","+AutoProcessor.AUTO_DEPLOY_START_VALUE);
             
             for(String key:config.keySet())
-            		System.getProperties().setProperty(key, config.get(key));
+				System.getProperties().setProperty(key, config.get(key));
             
 			AutoProcessor.process(config, framework.getBundleContext());
 			framework.start();
-			ServiceReference<?> runtimeReference=framework.getBundleContext().getServiceReference("com.shtick.utils.scratch.runner.core.ScratchRuntime");
-			if(runtimeReference==null){
-				System.err.println("No ScratchRuntime found.");
+			ServiceReference<?> factoryReference=framework.getBundleContext().getServiceReference("com.shtick.utils.scratch.runner.core.ScratchRuntimeFactory");
+			ServiceReference<?> driverReference=framework.getBundleContext().getServiceReference("com.shtick.utils.scratch.runner.Driver");
+			if(factoryReference==null){
+				System.err.println("No ScratchRuntimeFactory found.");
 				synchronized(config){
-					config.wait(30000);
+					config.wait(5000);
+				}
+			}
+			else if(driverReference==null){
+				System.err.println("No Driver found.");
+				synchronized(config){
+					config.wait(5000);
 				}
 			}
 			else{
-        			mainService=framework.getBundleContext().getService(runtimeReference);
-        			try {
-	        			Method method = mainService.getClass().getMethod("main", String[].class);
-	        			method.invoke(mainService, new Object[] {args});
-        			}
-        			catch(NoSuchMethodException t) {
-        				throw new RuntimeException(t);
-        			}
+				factoryService=framework.getBundleContext().getService(factoryReference);
+				driverService=framework.getBundleContext().getService(driverReference);
+				Method[] methods = driverService.getClass().getMethods();
+				boolean invoked = false;
+				for(Method method:methods) {
+					if(method.getName().equals("main")) {
+						method.invoke(driverService, new Object[] {factoryService,args});
+						invoked = true;
+						break;
+					}
+				}
+				if(!invoked) {
+					System.err.println("Application method not found..");
+					synchronized(config){
+						config.wait(5000);
+					}
+				}
 			}
-	        	framework.stop();
-	        	System.exit(0);
+			framework.stop();
+			System.exit(0);
         }
         catch (Exception t){
             System.err.println("Could not create framework: " + t);
