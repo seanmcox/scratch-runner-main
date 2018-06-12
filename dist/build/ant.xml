@@ -19,9 +19,21 @@
                 <attribute name="Main-Class" value="com.shtick.utils.scratch.runner.Main"/>
                 <attribute name="Class-Path" value=". lib/org.apache.felix.main-5.6.10.jar lib/jflac-1.3.jar"/>
             </manifest>
-            <fileset dir="../../bin"/>
+            <fileset dir="../../bin/launcher"/>
         </jar>
-    </target>
+
+        <jar destfile="../install/plain/bundle/app.driver.jar">
+            <manifest>
+                <attribute name="Bundle-Name" value="Scratch Runner: Scratch Runner Application"/>
+                <attribute name="Bundle-Description" value="A bundle that utilizes the Scratch Runner to simply execute a Scratch project."/>
+                <attribute name="Bundle-Vendor" value="The Shtick"/>
+                <attribute name="Bundle-Version" value="0.1.0"/>
+                <attribute name="Bundle-Activator" value="com.shtick.utils.scratch.runner.bundle.Activator"/>
+                <attribute name="Import-Package" value="javax.swing,org.osgi.framework,com.shtick.utils.scratch.runner.core"/>
+            </manifest>
+            <fileset dir="../../bin/app"/>
+        </jar>
+	</target>
 
     <target name="run_image_viewer">
 		<delete dir="../install/test/felix-cache"></delete>
