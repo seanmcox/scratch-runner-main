@@ -10,5 +10,7 @@
 /dist/install/win/felix-cache
 /dist/install/win/lib
 /dist/install/win/*.jar
+/dist/osgi_bundles/*.jar
+/dist/library/*.jar
 /data
 !/data/*.sb2
