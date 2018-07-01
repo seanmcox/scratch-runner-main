@@ -38,6 +38,7 @@
 	</target>
 
 	<target name="jar_lib" description="Jars core, implementation, and standard blocks into a single non-OSGI library JAR.">
+		<mkdir dir="../library"/>
 		<delete>
 			<fileset dir="../library" includes="*.jar"/>
 		</delete>
@@ -83,6 +84,7 @@
 			<fileset dir="../install/plain/bundle" includes="scratchrunner.core.*.jar"/>
 			<fileset dir="../install/plain/bundle" includes="scratchrunner.runtime.*.jar"/>
 		</delete>
+		<mkdir dir="../library"/>
 		<copy todir="../install/plain/bundle">
 			<fileset dir="../osgi_bundles" includes="scratchrunner.blocks.standard.*.jar"/>
 			<fileset dir="../osgi_bundles" includes="scratchrunner.core.*.jar"/>
