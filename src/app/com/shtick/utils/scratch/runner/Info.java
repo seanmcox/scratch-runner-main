@@ -16,7 +16,7 @@ public class Info {
 	/**
 	 * The version of the program.
 	 */
-	public static final String VERSION = "2018.06.23";
+	public static final String VERSION = "2018.06.30";
 
 	/**
 	 * The organization behind the program.
