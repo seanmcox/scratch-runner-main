@@ -149,6 +149,7 @@
 		<delete>
 			<fileset dir="../library" includes="LICENSE.*"/>
 		</delete>
+		<copy file="../../LICENSE" tofile="../osgi_bundles/LICENSE.SCRATCHRUNNER.txt"/>
 		<copy todir="../library">
 			<fileset dir="../osgi_bundles" includes="LICENSE.*"/>
 		</copy>
@@ -170,7 +171,6 @@
 			<fileset dir="../osgi_bundles" includes="scratchrunner.blocks.standard.*.jar"/>
 			<fileset dir="../osgi_bundles" includes="scratchrunner.core.*.jar"/>
 			<fileset dir="../osgi_bundles" includes="scratchrunner.runtime.*.jar"/>
-			<fileset dir="${dir.workspace}/scratch-runner-implementation/lib/batik-1.9-bin" includes="README"/>
 		</copy>
 		<delete>
 			<fileset dir="../install/plain" includes="LICENSE.*" excludes="LICENSE.FELIX.*"/>

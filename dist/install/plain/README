@@ -1,0 +1,15 @@
+The license controlling the Scratch Runner, consisting of all classes in the
+com.shtick package and subpackages is: LICENSE.SCRATCHRUNNER.txt
+
+Other packages consist of libraries controlled by separate licenses as
+described below.
+
+This software uses Batik for primary SVG rendering.
+Related license: LICENSE.BATIK.txt
+
+This software uses Apache Felix for OSGi modularization.
+Related license: LICENSE.FELIX.txt
+
+This Software uses the Java(TM) Media Framework 2.1.1e API for some sound
+processing.
+Related license: LICENSE.JMF.txt
