@@ -41,11 +41,11 @@ public class Driver{
 	}
 	
 	/**
-	 * @param factory 
+	 * @param factories 
 	 * @param args
 	 * @throws IOException
 	 */
-	public void main(ScratchRuntimeFactory factory, String[] args) throws IOException{
+	public void main(Object[] factories, String[] args) throws IOException{
 		if(args.length==0) {
 			System.err.println("No arguments provided.");
 			help();
@@ -179,6 +179,30 @@ public class Driver{
 			System.out.println("Project file not specified.");
 			help();
 			System.exit(1);
+		}
+
+		if(factories.length == 0) {
+			System.err.println("No ScratchRuntimeFactory found to load project.");
+			System.exit(1);
+			return;
+		}
+		
+		ScratchRuntimeFactory factory = null;
+		for(Object factoryOption:factories) {
+			if(!(factoryOption instanceof ScratchRuntimeFactory)) {
+				System.err.println("Non ScratchRuntimeFactory provided as factory option.");
+				continue;
+			}
+			ScratchRuntimeFactory f = (ScratchRuntimeFactory)factoryOption;
+			if(f.isValidFilename(file)) {
+				factory = f;
+				break;
+			}
+		}
+		if(factory == null) {
+			System.err.println("None of the registered factories recognized the given file.");
+			System.exit(1);
+			return;
 		}
 		
 		// TODO Implement the fullscreen option. (It's a little more complicated to ensure that the program can exit properly.)
