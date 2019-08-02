@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.shtick.utils.scratch.runner;
+package com.shtick.app.emu;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
@@ -9,29 +9,33 @@ import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Stack;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import com.shtick.utils.scratch.runner.Info;
-import com.shtick.utils.scratch.runner.core.ScratchRuntime;
-import com.shtick.utils.scratch.runner.core.ScratchRuntimeFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+
+import com.shtick.app.emu.Info;
+import com.shtick.app.emu.factory.Scratch2EmulatorFactory;
+import com.shtick.app.emu.factory.Scratch3EmulatorFactory;
+import com.shtick.emu.Emulator;
+import com.shtick.emu.EmulatorFactory;
 
 /**
  * @author sean.cox
  *
  */
 public class Driver{
-	private static ScratchRuntime RUNTIME;
-	private static String RESOURCE_PROJECT_FILE = "project.json";
-	private JPanel stage;
+	private static Emulator RUNTIME;
 	private Stack<JPanel> frameStack = new Stack<>();
 
 	private JFrame mainWindow;
-	private int stageWidth;
-	private int stageHeight;
 	
 	/**
 	 * 
@@ -41,11 +45,41 @@ public class Driver{
 	}
 	
 	/**
+	 * @param bundleContext 
 	 * @param factories 
 	 * @param args
 	 * @throws IOException
 	 */
-	public void main(Object[] factories, String[] args) throws IOException{
+	public void main(BundleContext bundleContext, String[] args) throws IOException{
+		ServiceReference<?>[] factory2References = null;
+		ServiceReference<?>[] factory3References = null;
+		try {
+			factory2References = bundleContext.getServiceReferences("com.shtick.utils.scratch.runner.core.ScratchRuntimeFactory",null);
+			factory3References=bundleContext.getServiceReferences("com.shtick.utils.scratch3.runner.core.ScratchRuntimeFactory",null);
+		}
+		catch(InvalidSyntaxException t) {
+			// This should never happen.
+		}
+	    LinkedList<EmulatorFactory> factories = new LinkedList<>();
+		if((factory2References!=null)&&(factory2References.length>0)){
+			for(ServiceReference<?> factoryReference:factory2References) {
+				com.shtick.utils.scratch.runner.core.ScratchRuntimeFactory factoryService=(com.shtick.utils.scratch.runner.core.ScratchRuntimeFactory)bundleContext.getService(factoryReference);
+				if(factoryService==null) {
+					continue;
+				}
+				factories.add(new Scratch2EmulatorFactory(factoryService));
+			}
+		}
+		if((factory3References!=null)&&(factory3References.length>0)){
+			for(ServiceReference<?> factoryReference:factory3References) {
+				com.shtick.utils.scratch3.runner.core.ScratchRuntimeFactory factoryService=(com.shtick.utils.scratch3.runner.core.ScratchRuntimeFactory)bundleContext.getService(factoryReference);
+				if(factoryService==null) {
+					continue;
+				}
+				factories.add(new Scratch3EmulatorFactory(factoryService));
+			}
+		}
+
 		if(args.length==0) {
 			System.err.println("No arguments provided.");
 			help();
@@ -176,26 +210,21 @@ public class Driver{
 		}
 		
 		if(file==null) {
-			System.out.println("Project file not specified.");
+			System.err.println("Project file not specified.");
 			help();
 			System.exit(1);
 		}
 
-		if(factories.length == 0) {
+		if(factories.size() == 0) {
 			System.err.println("No ScratchRuntimeFactory found to load project.");
 			System.exit(1);
 			return;
 		}
 		
-		ScratchRuntimeFactory factory = null;
-		for(Object factoryOption:factories) {
-			if(!(factoryOption instanceof ScratchRuntimeFactory)) {
-				System.err.println("Non ScratchRuntimeFactory provided as factory option.");
-				continue;
-			}
-			ScratchRuntimeFactory f = (ScratchRuntimeFactory)factoryOption;
-			if(f.isValidFilename(file)) {
-				factory = f;
+		EmulatorFactory factory = null;
+		for(EmulatorFactory factoryOption:factories) {
+			if(factoryOption.isValidFilename(file)) {
+				factory = factoryOption;
 				break;
 			}
 		}
@@ -204,6 +233,7 @@ public class Driver{
 			System.exit(1);
 			return;
 		}
+		System.out.println("Using factory: "+factory.getEmulatorIdentifier());
 		
 		// TODO Implement the fullscreen option. (It's a little more complicated to ensure that the program can exit properly.)
 		// TODO Implement an option that shows and uses the green flag and stop sign.
@@ -249,15 +279,15 @@ public class Driver{
 	 * @throws IOException 
 	 * 
 	 */
-	public void start(ScratchRuntimeFactory factory, File projectFile, int stageWidth, int stageHeight, int frameWidth, int frameHeight, boolean fullscreen) throws IOException{
-		this.stageWidth = stageWidth;
-		this.stageHeight = stageHeight;
-		
+	public void start(EmulatorFactory factory, File projectFile, int stageWidth, int stageHeight, int frameWidth, int frameHeight, boolean fullscreen) throws IOException{
 		mainWindow=new JFrame(Info.NAME+" "+Info.VERSION);
 
 		if(RUNTIME!=null)
 			throw new RuntimeException("Only one ScratchRuntime can be instantiated.");
-		RUNTIME = factory.createScratchRuntime(projectFile, stageWidth, stageHeight);
+		HashMap<String,Object> params = new HashMap<>();
+		params.put("stageWidth", stageWidth);
+		params.put("stageHeight", stageHeight);
+		RUNTIME = factory.createEmulator(projectFile, params);
 
 		mainWindow.setUndecorated(true);
 		if(fullscreen) {
@@ -273,7 +303,7 @@ public class Driver{
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainWindow.setVisible(true);
 		
-		openView(RUNTIME.getStagePanel());
+		openView(RUNTIME.getEmulatorComponent());
 		RUNTIME.start();
 	}
 	
@@ -281,7 +311,7 @@ public class Driver{
 	 * 
 	 * @return The instance of ScratchRuntime.
 	 */
-	public static ScratchRuntime getScratchRuntime() {
+	public static Emulator getScratchRuntime() {
 		return RUNTIME;
 	}	
 

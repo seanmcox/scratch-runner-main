@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.shtick.utils.scratch.runner;
+package com.shtick.app.emu;
 
 /**
  * @author sean.cox
@@ -16,7 +16,7 @@ public class Info {
 	/**
 	 * The version of the program.
 	 */
-	public static final String VERSION = "2018.07.02";
+	public static final String VERSION = "2019.07.25";
 
 	/**
 	 * The organization behind the program.

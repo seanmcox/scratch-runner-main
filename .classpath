@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="bin/app" path="src/app"/>
+	<classpathentry kind="src" output="bin/core" path="src/core"/>
 	<classpathentry kind="src" output="bin/launcher" path="src/launcher"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
@@ -9,5 +10,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="dist/install/plain/lib/org.apache.felix.main-5.6.10.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/scratch-runner-core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/scratch3-runner-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
