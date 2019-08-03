@@ -21,7 +21,6 @@ import org.osgi.framework.launch.Framework;
  */
 public class Main {
     private static Framework framework = null;
-    private static LinkedList<Object> factoryServices = new LinkedList<>();
     private static Object driverService;
 
 	/**
@@ -44,34 +43,20 @@ public class Main {
             
 			AutoProcessor.process(config, framework.getBundleContext());
 			framework.start();
-			ServiceReference<?>[] factoryReferences=framework.getBundleContext().getServiceReferences("com.shtick.utils.scratch.runner.core.ScratchRuntimeFactory",null);
-			ServiceReference<?> driverReference=framework.getBundleContext().getServiceReference("com.shtick.utils.scratch.runner.Driver");
-			if((factoryReferences==null)||(factoryReferences.length==0)){
-				System.err.println("No ScratchRuntimeFactory found.");
-				synchronized(config){
-					config.wait(5000);
-				}
-			}
-			else if(driverReference==null){
+			ServiceReference<?> driverReference=framework.getBundleContext().getServiceReference("com.shtick.app.emu.Driver");
+			if(driverReference==null){
 				System.err.println("No Driver found.");
 				synchronized(config){
 					config.wait(5000);
 				}
 			}
 			else{
-				for(ServiceReference<?> factoryReference:factoryReferences) {
-					Object factoryService=framework.getBundleContext().getService(factoryReference);
-					if(factoryService==null) {
-						continue;
-					}
-					factoryServices.add(factoryService);
-				}
 				driverService=framework.getBundleContext().getService(driverReference);
 				Method[] methods = driverService.getClass().getMethods();
 				boolean invoked = false;
 				for(Method method:methods) {
 					if(method.getName().equals("main")) {
-						method.invoke(driverService, new Object[] {factoryServices.toArray(),args});
+						method.invoke(driverService, new Object[] {framework.getBundleContext(),args});
 						invoked = true;
 						break;
 					}

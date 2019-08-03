@@ -1,4 +1,4 @@
-package com.shtick.utils.scratch.runner.bundle;
+package com.shtick.app.emu.bundle;
 
 import java.util.Hashtable;
 
@@ -6,7 +6,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import com.shtick.utils.scratch.runner.Driver;
+import com.shtick.app.emu.Driver;
 
 /**
  **/
@@ -22,7 +22,7 @@ public class Activator implements BundleActivator {
     @Override
 	public void start(BundleContext context){
 		System.out.println(this.getClass().getCanonicalName()+": Starting.");
-		driverRegistration=context.registerService(com.shtick.utils.scratch.runner.Driver.class.getName(), new Driver(),new Hashtable<String, String>());
+		driverRegistration=context.registerService(com.shtick.app.emu.Driver.class.getName(), new Driver(),new Hashtable<String, String>());
     }
 
     /**

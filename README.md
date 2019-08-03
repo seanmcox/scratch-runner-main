@@ -3,12 +3,21 @@ The initializer for the Scratch Runner. Starts up Apache Felix and loads the scr
 
 The compiled Scratch Runner can be downloaded from <a href="http://theshtick.org/scratchrunner/">http://theshtick.org/scratchrunner/</a>
 
-This is an Eclipse project. This is also the main project for the Scratch Runner, which contains the tasks for building the installation packages. The intended build method requires that you have Eclipse installed with the Java Development Tools. Four projects will need to be cloned into the same directory:
+This current version is being upgraded for Scratch3 and may not work with the old Scratch 2 emulator. (But this will all be resolved.)
+
+This is an Eclipse project. This is also the main project for the Scratch Runner, which contains the tasks for building the installation packages. The intended build method requires that you have Eclipse installed with the Java Development Tools. There is a runner for Scratch2 and one for Scratch 3. The complete set of related projects involves 7 repositories:
 
 * `scratch-runner-main`
+
+Scratch 2 Repositories:
 * `scratch-runner-core`
 * `scratch-runner-implementation`
 * `scratch-runner-blocks-standard`
+
+Scratch 3 Repositories:
+* `scratch3-runner-core`
+* `scratch3-runner-implementation`
+* `scratch3-runner-blocks-standard`
 
 Once these project are cloned, or imported into an Eclipse Workspace, the ant view should be opened, and the Ant files for each of the projects should be added to the Ant view. Each Ant file is located at ./dist/build/ant.xml for the respective project. The `jar_and_bundle` task for each project (except `scratch-runner-main`) will build the bundle JAR for the project and automatically update the bundles installed in the `scratch-runner-main` project (at scratch-runner-main/dist/install/plain/bundle).
 
